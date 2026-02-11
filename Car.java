@@ -1,18 +1,9 @@
-package SingleInheritance;
+package Method_Overriding;
 
-public class Car {
+public class Car extends Vehicle {
 
-    String  color ;
-    int Model ;
-    double Price ;
-    
-    public void Engine() {
-    	System.out.println(" It is Engine Functionality in Car .... ! ");
-    }
-    public void Sterring() {
-    	System.out.println(" Here is Car Sterring ");
-    }
-    
-    
-
+	@Override 
+	public void start() {
+		System.out.println("The Car is Started with key ");
+	}
 }
