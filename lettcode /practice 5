@@ -1,0 +1,67 @@
+import java.util.Arrays;
+
+class Solution {
+    // count frequency for s
+    static int[] count = new int[26];
+    // answer string
+    static String ans;
+
+    public String lexGreaterPermutation(String s, String target) {
+        // init
+        char[] s1 = s.toCharArray();
+        Arrays.fill(count, 0);
+        ans = "";
+
+        // Collect frequency from s
+        for (char ch : s1) {
+            count[ch-'a']++;
+        }
+
+        // backtracking
+        dfs(target.toCharArray(), 0, new StringBuilder(), false);
+        return ans;
+    }
+
+    // i is the starting index of target
+    // sb is used to store possible answer string
+    // isFound: Have we found a char that in sb, which was strictly greater than the corresponding char in target in PREVIOUS.
+    boolean dfs(char[] target, int i, StringBuilder sb, boolean isFound){
+        if(i == target.length){
+            // We found one valid and it's also the lexicographically smallest due to DFS's feature (we start from the lowest char first)
+            if(isFound){
+                ans = sb.toString();
+                return true;
+            }
+            return false;
+        }
+
+        // We already found one in previous, so we only need to put the rest chars from target in the lexicographically smallest way
+        if(isFound){
+            int p = 0;
+            for (int j = i; j < target.length; j++) {
+                while (count[p] == 0)p++;
+                count[p]--;
+                sb.append((char)('a'+p));
+            }
+            ans = sb.toString();
+            return true;
+        }
+
+        // If we haven't found one, try the equal one first, if it fails, then use a greater char.
+        // Backtracking process
+        int start = target[i]-'a';
+        for (int j = start; j < 26; j++) {
+            if(count[j] == 0)continue;
+            count[j]--;
+            sb.append((char)('a'+j));
+            // Pruning
+            if (dfs(target, i+1, sb, start != j)) {
+                return true;
+            }
+            count[j]++;
+            sb.deleteCharAt(sb.length()-1);
+        }
+
+        return false;
+    }
+}
